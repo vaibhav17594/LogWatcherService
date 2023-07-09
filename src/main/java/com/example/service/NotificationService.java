@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.entities.Greeting;
+import com.example.entities.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,8 @@ public class NotificationService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public CompletableFuture<Void> sendNotification(int counter) {
-        String message = "Counter value: " + counter;
-        System.out.println("Vaibhav inside message: " + message);
-        messagingTemplate.convertAndSend("/topic/greetings", new Greeting(message));
+    public CompletableFuture<Void> sendNotification(Log log) {
+        messagingTemplate.convertAndSend("/logs/log", log);
         return CompletableFuture.allOf();
     }
 }

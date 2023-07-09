@@ -24,7 +24,7 @@ public class CountService {
     private CompletableFuture<Void> runAsync() {
 
         Runnable runnableTask = () -> IntStream.range(1, 1000).forEach(counter -> {
-            notificationService.sendNotification(counter);
+            //notificationService.sendNotification(counter);
             try {
                 Thread.sleep(500);
             } catch (Exception e) {

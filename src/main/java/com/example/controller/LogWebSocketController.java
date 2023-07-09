@@ -1,20 +1,25 @@
 package com.example.controller;
 
+import com.example.service.LogFileWatcherService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.util.HtmlUtils;
-import com.example.entities.Greeting;
-import com.example.entities.HelloMessage;
+import com.example.entities.Log;
+import com.example.entities.Request;
+
+import java.util.List;
 
 @Controller
 public class LogWebSocketController {
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
-    public Greeting greeting(HelloMessage message) throws Exception {
-        Thread.sleep(1000); // simulated delay
-        System.out.println("VAIBHAV IS HERE!");
-        return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
+    @Autowired
+    private LogFileWatcherService logFileWatcher;
+
+    @MessageMapping("/subscribe")
+    @SendTo("/logs/log")
+    public List<Log> watch(Request message) throws Exception {
+
+        return logFileWatcher.readLogLines();
     }
 }
