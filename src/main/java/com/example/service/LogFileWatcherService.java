@@ -11,7 +11,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -34,9 +33,8 @@ public class LogFileWatcherService {
 
         Runnable runnable = () -> IntStream.range(1, 1000).forEach(num -> {
             Log log = new Log("Executed counter: " + num);
-            System.out.println("Vaibhavsri inside log: " + log.getContent());
             this.notificationService.sendNotification(log);
-            this.setTailLog(log);
+            this.addTailLog(log);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -48,7 +46,7 @@ public class LogFileWatcherService {
         return CompletableFuture.allOf();
     }
 
-    private void setTailLog(Log log) {
+    private void addTailLog(Log log) {
 
         this.tailLogs.add(log);
         if (this.tailLogs.size() > 10) {

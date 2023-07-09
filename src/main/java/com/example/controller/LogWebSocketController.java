@@ -18,8 +18,7 @@ public class LogWebSocketController {
 
     @MessageMapping("/subscribe")
     @SendTo("/logs/log")
-    public List<Log> watch(Request message) throws Exception {
-
+    public List<Log> watch(Request request) throws Exception {
         return logFileWatcher.readLogLines();
     }
 }

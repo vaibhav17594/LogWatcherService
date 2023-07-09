@@ -9,7 +9,7 @@ function setConnected(connected) {
     else {
         $("#conversation").hide();
     }
-    $("#greetings").html("");
+    $("#logs").html("");
 }
 
 function connect() {
@@ -18,8 +18,18 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
+        sendInitialLogsRequest();
         stompClient.subscribe('/logs/log', function (log) {
-            showGreeting(JSON.parse(log.body).content);
+            var logData = JSON.parse(log.body);
+            if (Array.isArray(logData)) {
+                // Handle the case where log is a list of logs
+                logData.forEach(function (item) {
+                    showLog(item.content);
+                });
+            } else {
+                // Handle the case where log is a single log
+                showLog(logData.content);
+            }
         });
     });
 }
@@ -32,19 +42,20 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendName() {
-    stompClient.send("/app/subscribe", {}, JSON.stringify({'name': $("#name").val()}));
+function showLog(message) {
+    $("#logs").append("<tr><td>" + message + "</td></tr>");
 }
 
-function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+function sendInitialLogsRequest() {
+    stompClient.send("/app/subscribe", {}, JSON.stringify({'name': $("#name").val()}));
 }
 
 $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
     });
-    $( "#connect" ).click(function() { connect(); });
+    $( "#connect" ).click(function() {
+        connect();
+    });
     $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
 });
