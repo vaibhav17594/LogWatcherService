@@ -19,7 +19,19 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         sendInitialLogsRequest();
-        stompClient.subscribe('/logs/log', function (log) {
+        stompClient.subscribe('/user/queue/logs', function (log) {
+                    var logData = JSON.parse(log.body);
+                    if (Array.isArray(logData)) {
+                        // Handle the case where log is a list of logs
+                        logData.forEach(function (item) {
+                            showLog(item.content);
+                        });
+                    } else {
+                        // Handle the case where log is a single log
+                        showLog(logData.content);
+                    }
+                });
+        stompClient.subscribe('/topic/logs', function (log) {
             var logData = JSON.parse(log.body);
             if (Array.isArray(logData)) {
                 // Handle the case where log is a list of logs

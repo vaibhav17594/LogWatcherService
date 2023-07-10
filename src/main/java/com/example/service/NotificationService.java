@@ -18,7 +18,7 @@ public class NotificationService {
     }
 
     public CompletableFuture<Void> sendNotification(Log log) {
-        messagingTemplate.convertAndSend("/logs/log", log);
+        messagingTemplate.convertAndSend("/topic/logs", log);
         return CompletableFuture.allOf();
     }
 }
