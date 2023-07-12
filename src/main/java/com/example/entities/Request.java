@@ -2,20 +2,20 @@ package com.example.entities;
 
 public class Request {
 
-    private String name;
+    private String fileName;
 
     public Request() {
     }
 
-    public Request(String name) {
-        this.name = name;
+    public Request(String fileName) {
+        this.fileName = fileName;
     }
 
-    public String getName() {
-        return name;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

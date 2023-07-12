@@ -18,8 +18,9 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        sendInitialLogsRequest();
-        stompClient.subscribe('/user/queue/logs', function (log) {
+//        const sessionId = stompClient.ws._transport.url.split('/')[4];
+        const destination = '/user/queue/logs';
+        stompClient.subscribe(destination, function (log) {
                     var logData = JSON.parse(log.body);
                     if (Array.isArray(logData)) {
                         // Handle the case where log is a list of logs
@@ -31,6 +32,7 @@ function connect() {
                         showLog(logData.content);
                     }
                 });
+        sendInitialLogsRequest();
         stompClient.subscribe('/topic/logs', function (log) {
             var logData = JSON.parse(log.body);
             if (Array.isArray(logData)) {
@@ -59,7 +61,10 @@ function showLog(message) {
 }
 
 function sendInitialLogsRequest() {
-    stompClient.send("/app/subscribe", {}, JSON.stringify({'name': $("#name").val()}));
+    stompClient.send("/app/subscribe", {},
+    JSON.stringify({
+        'fileName': $("#fileName").val()
+    }));
 }
 
 $(function () {

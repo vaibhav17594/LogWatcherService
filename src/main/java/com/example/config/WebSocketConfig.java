@@ -18,6 +18,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/log-watcher-websocket").withSockJS();
+        registry.addEndpoint("/log-watcher-websocket")
+                .setHandshakeHandler(new CustomHandshakeHandler())
+                .withSockJS();
     }
 }
