@@ -1,0 +1,15 @@
+WARN: status logs App A - /error 1
+ERROR: status logs App A - /exception 2
+INFO: status logs App A - /app/1.0/status 3
+WARN: status logs App A - /error 4
+ERROR: status logs App A - /exception 5
+INFO: status logs App A - /app/1.0/status 6
+WARN: status logs App A - /error 7
+ERROR: status logs App A - /exception 8
+INFO: status logs App A - /app/1.0/status 9
+WARN: status logs App A - /error 10
+ERROR: status logs /exception - APP - A 11
+ INFO: status logs /app/1.0/status - APP - A 12
+WARN: status logs /error - APP - A 13
+ERROR: status logs /exception - APP - A 14
+ INFO: status logs /app/1.0/status - APP - A 15

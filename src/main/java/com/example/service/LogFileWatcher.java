@@ -1,8 +1,6 @@
 package com.example.service;
 
 import com.example.entities.Log;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,15 +13,16 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
-@Service
-public class LogFileWatcherService {
+public class LogFileWatcher {
 
     private final Queue<Log> tailLogs; //Max size 1000
     private final File logFileToWatch;
@@ -34,10 +33,9 @@ public class LogFileWatcherService {
     private final Path logFileDirectory;
     private long filePosition;
 
-    @Autowired
-    public LogFileWatcherService(NotificationService notificationService) throws IOException {
+    public LogFileWatcher(NotificationService notificationService, String fileName) throws IOException {
         this.notificationService = notificationService;
-        this.logFileToWatch = new File("/Users/vaibhavsrivastava/workspace/Misc/LogWatcherService/src/main/resources/application-logs.log");
+        this.logFileToWatch = new File(fileName);
         this.randomAccessFile = new RandomAccessFile(this.logFileToWatch, "r");
         this.watchService = FileSystems.getDefault().newWatchService();
         this.tailLogs = new LinkedBlockingDeque<>();
@@ -79,7 +77,8 @@ public class LogFileWatcherService {
                 Log log = new Log(logLine);
                 this.appendLog(log);
                 //Broadcast notification...
-                this.notificationService.sendNotification(log);
+                System.out.println("Sending notification on log file: " + this.logFileToWatch.getAbsolutePath() + ", log: " + logLine);
+                this.notificationService.sendNotificationToLogfileSubscribedUser(this.logFileToWatch.getAbsolutePath(), Collections.singletonList(log));
             }
             this.filePosition = randomAccessFile.getFilePointer();
         } catch (Exception exception) {
@@ -98,5 +97,10 @@ public class LogFileWatcherService {
     public List<Log> readLogLines() {
 
         return new ArrayList<>(this.tailLogs);
+    }
+
+    public CompletableFuture<Void> stop() {
+        //To be implemented.
+        return CompletableFuture.allOf();
     }
 }
